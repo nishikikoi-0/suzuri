@@ -36,6 +36,11 @@ fn help() {
     std::process::exit(0);
 }
 
+fn version_command() {
+    println!("{}", msgs::VERSION_CMD);
+    std::process::exit(0);
+}
+
 fn main() {
     let args = Cli::parse();
     if args.queries.is_empty() && !args.help {
@@ -46,7 +51,9 @@ fn main() {
     if args.help {
         help();
     }
-
+    if args.version {
+        version_command();
+    }
     let query_args = QueryOptions::new(args.verbose, args.common);
 
     for q in &args.queries {
