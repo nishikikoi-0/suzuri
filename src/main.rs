@@ -10,12 +10,15 @@ mod handle_json;
 
 #[derive(Parser, Debug)]
 #[command(
-    version,
+    disable_version_flag = true,
     disable_help_flag = true,
     long_about = None)]
 struct Cli {
     #[arg(short, long)]
     help: bool,
+
+    #[arg(long)]
+    version: bool,
 
     queries: Vec<String>,
 
@@ -27,18 +30,25 @@ struct Cli {
 
     #[arg(short, long)]
     common: bool,
+
+
 }
 
 //   -i, --informative <query>     Display all available information for each shown result
 
 fn help() {
-    println!("{}", msgs::HELP_CMD);
+    println!("{}\n", msgs::HELP_CMD);
+    std::process::exit(0);
+}
+
+fn version_command() {
+    println!("{}\n", msgs::VERSION_CMD);
     std::process::exit(0);
 }
 
 fn main() {
     let args = Cli::parse();
-    if args.queries.is_empty() && !args.help {
+    if args.queries.is_empty() && !args.version && !args.help {
         println!("\nPlease provide a query, or run suzuri --help for instructions on usage.");
         std::process::exit(0);
     }
@@ -46,7 +56,9 @@ fn main() {
     if args.help {
         help();
     }
-
+    if args.version {
+        version_command();
+    }
     let query_args = QueryOptions::new(args.verbose, args.common);
 
     for q in &args.queries {
