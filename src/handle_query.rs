@@ -1,4 +1,7 @@
+use crate::db;
 use crate::handle_json::{JishoResponse, JsonParsed, ParseOptions};
+use colored::Colorize;
+use rusqlite::Connection;
 
 use curl::easy::Easy;
 
@@ -16,7 +19,40 @@ impl QueryOptions {
     }
 }
 
-pub fn handle_query(q: &str, args: &QueryOptions) {
+pub fn handle_query(q: &str, args: &QueryOptions, conn: &Connection) {
+    if !args.verbose {
+        if let Ok(Some(entry)) = db::get_override(conn, q) {
+            if entry.override_type == "query" {
+                let definition = entry.value.replace('@', "\n");
+                if entry.reading.len() == 0 {
+                    println!("\n{}\n", definition);
+                } else if entry.kanji.len() > 0 {
+                    let (first, rest) = definition.split_once('\n').unwrap();
+                    println!(
+                        "\n{} {}{}{}\n\n{}\n{}",
+                        entry.kanji.truecolor(0x00, 0xE0, 0xBA),
+                        "【".truecolor(0xFF, 0xCF, 0x00),
+                        entry.reading.truecolor(0x91, 0x00, 0x8D),
+                        "】".truecolor(0xFF, 0xCF, 0x00),
+                        first.truecolor(0xFF, 0x34, 0x83),
+                        rest
+                    );
+                } else {
+                    let (first, rest) = definition.split_once('\n').unwrap();
+                    println!(
+                        "\n{}\n\n{}\n{}",
+                        entry.reading.truecolor(0x00, 0xE0, 0xBA),
+                        first.truecolor(0xFF, 0x34, 0x83),
+                        rest
+                    );
+                };
+                if entry.replace == 1 {
+                    return;
+                }
+            }
+        }
+    }
+
     let mut suzuri = Easy::new();
 
     let encoded_query = suzuri.url_encode(q.as_bytes());
@@ -53,8 +89,8 @@ pub fn handle_query(q: &str, args: &QueryOptions) {
     if parsed.is_empty() {
         println!("\nNo search results for \"{}\"", encoded_query);
     } else if args.verbose {
-        parsed.print_definition_verbose();
+        parsed.print_definition_verbose(conn);
     } else {
-        parsed.print_definition(0)
+        parsed.print_definition(0, conn)
     }
 }

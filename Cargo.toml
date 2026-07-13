@@ -1,6 +1,6 @@
 [package]
 name = "suzuri-cli"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 license-file = "LICENSE.md"
 description ="A CLI-based Japanese dictionary using the Jisho API"
@@ -9,9 +9,11 @@ readme = "README.md"
 [dependencies]
 anyhow = "1.0.103"
 clap = { version = "4", features = ["derive"] }
+colored = "3.1.1"
 curl = { version = "0.4.50", features = ["static-curl", "static-ssl"] }
+dialoguer = "0.12.0"
 dirs = "6.0.0"
-rusqlite = "0.40.1"
+rusqlite = { version = "0.40.1", features = ["bundled"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.150"
 [[bin]]

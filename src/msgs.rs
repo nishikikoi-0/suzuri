@@ -1,8 +1,14 @@
-pub const VERSION_CMD: &str = concat!("
-    Suzuri v", env!("CARGO_PKG_VERSION"));
+pub const VERSION_CMD: &str = concat!(
+    "
+    Suzuri v",
+    env!("CARGO_PKG_VERSION")
+);
 
-pub const HELP_CMD: &str = concat!("
-    Suzuri v", env!("CARGO_PKG_VERSION"), " - a CLI-based Japanese dictionary using the Jisho API
+pub const HELP_CMD: &str = concat!(
+    "
+    Suzuri v",
+    env!("CARGO_PKG_VERSION"),
+    " - a CLI-based Japanese dictionary using the Jisho API
 Made by nishikikoi
 
 Usage:
@@ -20,9 +26,14 @@ Options:
 
     -v, --verbose <query>   Show all search results, rather
                             than only the most relevant one
-    -h, --help              Show this help message and exit
     -c  --common            Limits results exclusively to those
-                            marked as common words by jisho.
+                            marked as common words by jisho
+        --no-override       Prevents overrides from occurring
+
+        --db-version        Displays database version
+        --update-db         Updates database to latest version
+
+    -h, --help              Show this help message and exit
         --version           Show version information
 
 Examples:
@@ -41,4 +52,5 @@ Examples:
 
     suzuri north south east west
         Displays information for all of 北, 南, 東, and 西
-        ");
+        "
+);
